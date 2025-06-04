@@ -1,0 +1,51 @@
+# Luciano Alejandro Gómez Muñoz 22310214
+
+# Algoritmo de Ordenamiento Rápido (QuickSort)
+# ----------------------------------------------------------
+# QuickSort es un algoritmo de ordenamiento que sigue el paradigma "divide y vencerás".
+# Consiste en seleccionar un elemento llamado *pivote*, y luego reordenar los elementos
+# de la lista de modo que todos los menores al pivote queden antes, y todos los mayores, después.
+#
+# Luego se aplica el mismo procedimiento de forma recursiva a las sublistas izquierda y derecha.
+#
+# Este algoritmo es muy eficiente en la práctica: su complejidad promedio es O(n log n),
+# aunque en el peor caso puede llegar a O(n²), por ejemplo si el pivote es siempre el mínimo o máximo.
+
+def quick_sort(lista):
+    """
+    Función principal que implementa QuickSort de forma recursiva.
+    """
+    # Caso base: si la lista tiene 0 o 1 elementos, ya está ordenada
+    if len(lista) <= 1:
+        return lista
+
+    # Elegimos un pivote: aquí usamos el último elemento como pivote
+    pivote = lista[-1]
+
+    # Inicializamos listas para los elementos menores, iguales y mayores al pivote
+    menores = []  # Elementos menores que el pivote
+    iguales = []  # Elementos iguales al pivote
+    mayores = []  # Elementos mayores que el pivote
+
+    # Clasificamos cada elemento de la lista en una de las tres listas
+    for elemento in lista:
+        if elemento < pivote:
+            menores.append(elemento)
+        elif elemento == pivote:
+            iguales.append(elemento)
+        else:
+            mayores.append(elemento)
+
+    # Llamamos recursivamente a quick_sort sobre las sublistas menores y mayores
+    # y las concatenamos con la lista de elementos iguales al pivote
+    return quick_sort(menores) + iguales + quick_sort(mayores)
+
+# Ejemplo de uso:
+# Lista desordenada de ejemplo
+ejemplo = [9, 4, 6, 2, 7, 5]
+
+# Aplicamos quicksort y guardamos el resultado
+resultado = quick_sort(ejemplo)
+
+# Imprimimos la lista ordenada
+print("Lista ordenada:", resultado)
