@@ -1,0 +1,116 @@
+# Luciano Alejandro Gómez Muñoz 22310214
+
+# Algoritmo: Balanced Multiway Merge Sort (Mezcla balanceada de múltiples vías)
+# --------------------------------------------------------------------------------
+# Este algoritmo es una estrategia de ordenamiento externo, donde el volumen de datos
+# excede la memoria principal y se debe trabajar con archivos o estructuras auxiliares.
+#
+# El proceso tiene tres pasos principales:
+# 1. Se detectan corridas naturales en la lista (sublistas ya ordenadas).
+# 2. Se distribuyen equitativamente en varios "archivos" (listas simuladas).
+# 3. Se mezclan en múltiples fases hasta que solo queda una corrida ordenada final.
+#
+# Este método usa mezcla k-vías (multiway) y busca balancear la carga de trabajo entre archivos.
+
+import heapq  # Importamos la librería heapq que permite hacer mezclas eficientes con min-heaps
+
+# --------------------------------------------------------
+# Función que detecta corridas (sublistas ya ordenadas)
+# --------------------------------------------------------
+def detectar_corridas(lista):
+    """
+    Detecta sublistas ordenadas crecientes (corridas naturales) dentro de una lista.
+    """
+    corridas = []  # Lista donde almacenaremos las corridas detectadas
+
+    if not lista:
+        return []  # Si la lista está vacía, no hay corridas
+
+    corrida = [lista[0]]  # Iniciamos la primera corrida con el primer elemento
+
+    # Recorremos el resto de la lista
+    for i in range(1, len(lista)):
+        if lista[i] >= lista[i - 1]:
+            # Si el elemento actual es mayor o igual al anterior, continúa la corrida
+            corrida.append(lista[i])
+        else:
+            # Si se rompe el orden creciente, guardamos la corrida actual
+            corridas.append(corrida)
+            corrida = [lista[i]]  # Comenzamos una nueva corrida
+
+    corridas.append(corrida)  # Agregamos la última corrida
+
+    return corridas  # Retornamos la lista de corridas
+
+# --------------------------------------------------------
+# Función para distribuir corridas entre varios archivos
+# --------------------------------------------------------
+def distribuir_corridas(corridas, num_archivos):
+    """
+    Distribuye las corridas detectadas entre múltiples archivos (listas) de forma balanceada.
+    """
+    archivos = [[] for _ in range(num_archivos)]  # Creamos listas vacías simulando archivos
+
+    # Distribuimos las corridas de forma circular (round-robin)
+    for i, corrida in enumerate(corridas):
+        destino = i % num_archivos  # Se asigna al archivo según el índice de la corrida
+        archivos[destino].append(corrida)
+
+    return archivos  # Retornamos los archivos con las corridas distribuidas
+
+# --------------------------------------------------------
+# Función para mezclar corridas de múltiples archivos
+# --------------------------------------------------------
+def mezclar_corridas(archivos):
+    """
+    Mezcla todas las corridas de los archivos hasta obtener una única lista ordenada.
+    """
+    # Seguimos mezclando mientras haya más de una corrida en total
+    while sum(len(a) for a in archivos) > 1:
+        # Creamos nuevas listas simulando los archivos de la siguiente fase
+        nuevos_archivos = [[] for _ in range(len(archivos))]
+
+        # Mezclamos las corridas de los archivos actuales
+        while any(archivo for archivo in archivos):
+            mezclando = []  # Lista donde pondremos las corridas que vamos a fusionar
+
+            # Extraemos una corrida de cada archivo (si tiene corridas)
+            for archivo in archivos:
+                if archivo:
+                    corrida = archivo.pop(0)
+                    mezclando.append(corrida)
+
+            # Fusionamos las corridas usando heapq.merge (mezcla eficiente de listas ordenadas)
+            corrida_mezclada = list(heapq.merge(*mezclando))
+
+            # Guardamos la corrida mezclada en el primer archivo del nuevo conjunto
+            nuevos_archivos[0].append(corrida_mezclada)
+
+        # Reemplazamos los archivos originales con los nuevos para la siguiente fase
+        archivos = nuevos_archivos
+
+    # Cuando terminamos, habrá una única corrida final en uno de los archivos
+    for archivo in archivos:
+        if archivo:  # Si el archivo no está vacío
+            return archivo[0]  # Retornamos la corrida final, que es la lista ordenada
+
+    return []  # Si no hay archivos con corridas (caso límite), retornamos lista vacía
+
+# --------------------------------------------------------
+# EJEMPLO DE USO
+# --------------------------------------------------------
+
+# Lista desordenada para ordenar
+entrada = [3, 5, 7, 2, 4, 6, 1, 8, 9]
+
+# Paso 1: Detectamos las corridas naturales en la lista
+corridas = detectar_corridas(entrada)
+
+# Paso 2: Distribuimos las corridas en 3 "archivos" simulados
+archivos = distribuir_corridas(corridas, num_archivos=3)
+
+# Paso 3: Mezclamos las corridas en múltiples fases hasta obtener la lista ordenada
+resultado = mezclar_corridas(archivos)
+
+# Imprimimos el resultado final
+print("Lista ordenada:", resultado)
