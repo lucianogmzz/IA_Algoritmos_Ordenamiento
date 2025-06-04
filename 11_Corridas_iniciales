@@ -1,0 +1,63 @@
+# Luciano Alejandro Gómez Muñoz 22310214
+
+# Distribución de Corridas Iniciales (Distribution of Initial Runs)
+# ---------------------------------------------------------------------
+# Este proceso es esencial en algoritmos de ordenamiento externo como Polyphase Sort.
+# Consiste en dividir la lista de entrada en sublistas ya ordenadas (llamadas "runs") 
+# y distribuirlas en varios archivos auxiliares (o estructuras simuladas).
+#
+# Estas corridas serán posteriormente usadas en fases de mezcla.
+# El objetivo es repartirlas de forma equilibrada entre los archivos auxiliares.
+
+def detectar_corridas(lista):
+    """
+    Detecta corridas (runs) naturales dentro de la lista.
+    Una corrida es una sublista ya ordenada de forma creciente.
+    """
+    corridas = []
+    n = len(lista)
+
+    if n == 0:
+        return []
+
+    corrida = [lista[0]]  # Inicializamos la primera corrida
+
+    # Recorremos la lista para detectar cada corrida
+    for i in range(1, n):
+        if lista[i] >= lista[i - 1]:
+            corrida.append(lista[i])  # Seguimos en la misma corrida
+        else:
+            corridas.append(corrida)  # Cerramos la corrida actual
+            corrida = [lista[i]]      # Iniciamos una nueva
+
+    # Añadimos la última corrida
+    corridas.append(corrida)
+    return corridas
+
+def distribuir_corridas(corridas, num_archivos):
+    """
+    Distribuye las corridas detectadas entre 'num_archivos' archivos simulados (listas).
+    """
+    # Creamos la estructura que simula los archivos (listas vacías)
+    archivos = [[] for _ in range(num_archivos)]
+
+    # Distribuimos las corridas en modo round-robin (circular)
+    for i, corrida in enumerate(corridas):
+        destino = i % num_archivos  # Selecciona el archivo destino cíclicamente
+        archivos[destino].append(corrida)
+
+    return archivos
+
+# Ejemplo de uso:
+# Lista parcialmente ordenada
+entrada = [1, 4, 6, 2, 3, 5, 1, 7, 8]
+
+# Paso 1: Detectamos corridas iniciales
+corridas_detectadas = detectar_corridas(entrada)
+
+# Paso 2: Las distribuimos en 3 archivos simulados
+archivos = distribuir_corridas(corridas_detectadas, num_archivos=3)
+
+# Mostramos el resultado
+for i, archivo in enumerate(archivos):
+    print(f"Archivo {i+1}: {archivo}")
