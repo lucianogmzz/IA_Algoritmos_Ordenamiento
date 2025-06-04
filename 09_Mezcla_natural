@@ -1,0 +1,112 @@
+# Luciano Alejandro Gómez Muñoz 22310214
+
+# Algoritmo de Ordenamiento por Mezcla Natural (Natural Merging)
+# -----------------------------------------------------------------
+# Natural Merging es una variante del Merge Sort que detecta "series naturales" 
+# (sublistas que ya están ordenadas) en la lista original y las usa como base 
+# para la mezcla.
+#
+# A diferencia de otros métodos que parten de bloques de tamaño fijo o unitario,
+# este algoritmo identifica secuencias ordenadas contiguas, lo cual puede mejorar 
+# la eficiencia si la lista ya tiene cierto orden.
+#
+# El proceso se repite fusionando estas secuencias hasta que toda la lista está ordenada.
+# Tiene una complejidad promedio de O(n log n), pero puede ser mejor si los datos están 
+# parcialmente ordenados.
+
+def detectar_series(lista):
+    """
+    Función que detecta sublistas ordenadas (series naturales) en una lista.
+    Devuelve una lista de sublistas.
+    """
+    n = len(lista)
+    if n == 0:
+        return []
+
+    series = []  # Lista para almacenar las sublistas ordenadas
+    inicio = 0   # Índice del inicio de la serie actual
+
+    # Recorremos la lista para identificar las series
+    for i in range(1, n):
+        if lista[i] < lista[i - 1]:
+            # Si el orden se rompe, guardamos la serie actual
+            series.append(lista[inicio:i])
+            inicio = i  # Comienza una nueva serie
+
+    # Agregamos la última serie
+    series.append(lista[inicio:n])
+
+    return series
+
+def fusionar_series(series):
+    """
+    Fusiona pares de series ordenadas.
+    """
+    nueva_lista = []
+
+    # Recorremos la lista de series de dos en dos
+    i = 0
+    while i < len(series):
+        if i + 1 < len(series):
+            # Si hay un par, se fusionan
+            fusion = merge(series[i], series[i + 1])
+            nueva_lista.append(fusion)
+            i += 2
+        else:
+            # Si queda una sola serie, se agrega sin fusionar
+            nueva_lista.append(series[i])
+            i += 1
+
+    return nueva_lista
+
+def merge(izquierda, derecha):
+    """
+    Fusión de dos listas ordenadas en una sola también ordenada.
+    """
+    resultado = []
+    i = j = 0
+
+    while i < len(izquierda) and j < len(derecha):
+        if izquierda[i] <= derecha[j]:
+            resultado.append(izquierda[i])
+            i += 1
+        else:
+            resultado.append(derecha[j])
+            j += 1
+
+    # Añadimos los elementos restantes
+    resultado.extend(izquierda[i:])
+    resultado.extend(derecha[j:])
+    return resultado
+
+def natural_merge_sort(lista):
+    """
+    Algoritmo principal de mezcla natural.
+    """
+    # Repetimos el proceso mientras haya más de una serie
+    while True:
+        series = detectar_series(lista)
+
+        # Si solo hay una serie, la lista ya está completamente ordenada
+        if len(series) <= 1:
+            break
+
+        # Fusionamos las series detectadas
+        series = fusionar_series(series)
+
+        # Aplanamos la lista (series → lista simple)
+        lista = []
+        for s in series:
+            lista.extend(s)
+
+    return lista
+
+# Ejemplo de uso:
+# Lista parcialmente ordenada
+ejemplo = [1, 4, 5, 3, 6, 2, 7, 8]
+
+# Aplicamos el algoritmo de mezcla natural
+resultado = natural_merge_sort(ejemplo)
+
+# Imprimimos la lista ordenada
+print("Lista ordenada:", resultado)
