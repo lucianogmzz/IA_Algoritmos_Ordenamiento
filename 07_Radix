@@ -1,0 +1,73 @@
+# Luciano Alejandro Gómez Muñoz 22310214
+
+# Algoritmo de Ordenamiento por Radix (Radix Sort)
+# ----------------------------------------------------------
+# Radix Sort es un algoritmo no comparativo que ordena números enteros 
+# procesando sus dígitos individualmente, desde el dígito menos significativo 
+# (unidad) hasta el más significativo (decenas, centenas, etc.).
+#
+# Para cada posición de dígito, usa un algoritmo de ordenamiento estable, 
+# típicamente Counting Sort.
+#
+# Su ventaja es que puede ordenar eficientemente grandes cantidades de números 
+# enteros en tiempo O(nk), donde:
+# - n es el número de elementos,
+# - k es el número de dígitos del número más grande.
+#
+# No funciona directamente con números negativos (aunque puede adaptarse), 
+# y está diseñado principalmente para enteros positivos.
+
+def counting_sort_digito(arr, exp):
+    """
+    Ordena arr[] según el dígito correspondiente al valor de exp (10⁰, 10¹, 10², ...)
+    Esta función es un paso del radix sort.
+    """
+    n = len(arr)
+    salida = [0] * n  # Lista donde se guardará el resultado ordenado por este dígito
+    conteo = [0] * 10  # Lista para contar ocurrencias de cada dígito (0 al 9)
+
+    # Contamos cuántas veces aparece cada dígito en la posición actual
+    for i in range(n):
+        indice = (arr[i] // exp) % 10  # Extraemos el dígito actual
+        conteo[indice] += 1
+
+    # Transformamos conteo[i] para que contenga la posición final del dígito en salida[]
+    for i in range(1, 10):
+        conteo[i] += conteo[i - 1]
+
+    # Construimos la lista de salida (de derecha a izquierda para estabilidad)
+    i = n - 1
+    while i >= 0:
+        indice = (arr[i] // exp) % 10
+        salida[conteo[indice] - 1] = arr[i]
+        conteo[indice] -= 1
+        i -= 1
+
+    # Copiamos la lista ordenada por este dígito de nuevo al arreglo original
+    for i in range(n):
+        arr[i] = salida[i]
+
+def radix_sort(arr):
+    """
+    Función principal de Radix Sort. Ordena la lista usando Counting Sort por dígitos.
+    """
+    # Buscamos el número más grande para saber cuántos dígitos tiene
+    maximo = max(arr) if arr else 0
+
+    # Aplicamos counting_sort para cada posición decimal (unidad, decena, centena, ...)
+    exp = 1  # Empezamos con el dígito de las unidades
+    while maximo // exp > 0:
+        counting_sort_digito(arr, exp)
+        exp *= 10  # Avanzamos a la siguiente posición decimal
+
+    return arr
+
+# Ejemplo de uso:
+# Lista desordenada de números enteros positivos
+ejemplo = [170, 45, 75, 90, 802, 24, 2, 66]
+
+# Aplicamos radix sort
+radix_sort(ejemplo)
+
+# Imprimimos la lista ordenada
+print("Lista ordenada:", ejemplo)
