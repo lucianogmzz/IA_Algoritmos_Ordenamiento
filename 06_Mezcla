@@ -1,0 +1,65 @@
+# Luciano Alejandro Gómez Muñoz 22310214
+
+# Algoritmo de Ordenamiento por Mezcla (Merge Sort)
+# ----------------------------------------------------------
+# MergeSort es un algoritmo de ordenamiento que también se basa en el paradigma 
+# "divide y vencerás". Divide la lista en mitades hasta que cada sublista tiene 
+# un solo elemento, y luego las mezcla (merge) de forma ordenada para reconstruir 
+# la lista final completamente ordenada.
+#
+# Es muy eficiente y estable, con una complejidad O(n log n) en todos los casos 
+# (mejor, peor y promedio). Consume más memoria que QuickSort debido al uso de 
+# listas auxiliares durante la fusión.
+
+def merge_sort(lista):
+    # Caso base: si la lista tiene un solo elemento o está vacía, ya está ordenada
+    if len(lista) <= 1:
+        return lista
+
+    # Encontramos el punto medio para dividir la lista en dos mitades
+    medio = len(lista) // 2
+
+    # Dividimos la lista en dos partes: izquierda y derecha
+    izquierda = lista[:medio]
+    derecha = lista[medio:]
+
+    # Llamamos recursivamente merge_sort para ordenar ambas mitades
+    izquierda = merge_sort(izquierda)
+    derecha = merge_sort(derecha)
+
+    # Luego combinamos (merge) ambas mitades ya ordenadas
+    return merge(izquierda, derecha)
+
+def merge(izquierda, derecha):
+    """
+    Función auxiliar que une dos listas ordenadas en una sola también ordenada.
+    """
+    resultado = []  # Lista donde almacenaremos el resultado final
+    i = j = 0       # Punteros para recorrer izquierda y derecha
+
+    # Recorremos ambas listas al mismo tiempo
+    while i < len(izquierda) and j < len(derecha):
+        # Si el elemento en izquierda es menor o igual, lo agregamos al resultado
+        if izquierda[i] <= derecha[j]:
+            resultado.append(izquierda[i])
+            i += 1  # Avanzamos el puntero de la izquierda
+        else:
+            # Si el de la derecha es menor, lo agregamos al resultado
+            resultado.append(derecha[j])
+            j += 1  # Avanzamos el puntero de la derecha
+
+    # Agregamos los elementos restantes (si hay) de ambas listas
+    resultado.extend(izquierda[i:])  # Lo que quede en izquierda
+    resultado.extend(derecha[j:])    # Lo que quede en derecha
+
+    return resultado  # Retornamos la lista ya ordenada
+
+# Ejemplo de uso:
+# Lista desordenada de ejemplo
+ejemplo = [38, 27, 43, 3, 9, 82, 10]
+
+# Aplicamos merge sort
+resultado = merge_sort(ejemplo)
+
+# Imprimimos la lista ordenada
+print("Lista ordenada:", resultado)
