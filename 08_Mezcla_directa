@@ -1,0 +1,82 @@
+# Luciano Alejandro Gómez Muñoz 22310214
+
+# Algoritmo de Ordenamiento por Mezcla Directa (Straight Merging)
+# -----------------------------------------------------------------
+# Straight Merging es una variante del algoritmo Merge Sort, pero implementada
+# de manera iterativa (sin recursión).
+#
+# La idea es dividir la lista en segmentos (sublistas) de tamaño 1 y 
+# luego ir fusionándolos progresivamente en pares: primero de tamaño 1, 
+# luego de tamaño 2, luego 4, y así sucesivamente, hasta que toda la lista 
+# esté completamente ordenada.
+#
+# Al igual que Merge Sort, su complejidad es O(n log n), y requiere memoria
+# adicional para almacenar temporalmente los resultados de las fusiones.
+
+def merge(lista, izquierda, medio, derecha):
+    """
+    Función auxiliar que fusiona dos sublistas ordenadas:
+    - lista[izquierda:medio]
+    - lista[medio:derecha]
+    """
+    # Copiamos las sublistas
+    izquierda_sub = lista[izquierda:medio]
+    derecha_sub = lista[medio:derecha]
+
+    i = j = 0  # Punteros para recorrer izquierda_sub y derecha_sub
+    k = izquierda  # Puntero para la posición en la lista original
+
+    # Fusionamos ambas sublistas ordenadamente
+    while i < len(izquierda_sub) and j < len(derecha_sub):
+        if izquierda_sub[i] <= derecha_sub[j]:
+            lista[k] = izquierda_sub[i]
+            i += 1
+        else:
+            lista[k] = derecha_sub[j]
+            j += 1
+        k += 1
+
+    # Copiamos los elementos restantes (si hay) de izquierda_sub
+    while i < len(izquierda_sub):
+        lista[k] = izquierda_sub[i]
+        i += 1
+        k += 1
+
+    # Copiamos los elementos restantes (si hay) de derecha_sub
+    while j < len(derecha_sub):
+        lista[k] = derecha_sub[j]
+        j += 1
+        k += 1
+
+def straight_merge_sort(lista):
+    """
+    Algoritmo principal de ordenamiento por mezcla directa (iterativo).
+    """
+    n = len(lista)
+    tamaño_sublista = 1  # Comenzamos con sublistas de tamaño 1
+
+    # Aumentamos el tamaño de la sublista en potencias de 2: 1, 2, 4, 8, ...
+    while tamaño_sublista < n:
+        # Recorremos la lista por bloques de tamaño 'tamaño_sublista'
+        for izquierda in range(0, n, 2 * tamaño_sublista):
+            # Calculamos los índices medio y derecha para la fusión
+            medio = min(izquierda + tamaño_sublista, n)
+            derecha = min(izquierda + 2 * tamaño_sublista, n)
+
+            # Fusionamos las sublistas ordenadas
+            merge(lista, izquierda, medio, derecha)
+
+        # Duplicamos el tamaño de la sublista en la siguiente iteración
+        tamaño_sublista *= 2
+
+    return lista  # Retornamos la lista ordenada (opcional)
+
+# Ejemplo de uso:
+# Lista desordenada
+ejemplo = [37, 10, 22, 5, 70, 1, 18]
+
+# Aplicamos el algoritmo de mezcla directa
+straight_merge_sort(ejemplo)
+
+# Imprimimos el resultado
+print("Lista ordenada:", ejemplo)
