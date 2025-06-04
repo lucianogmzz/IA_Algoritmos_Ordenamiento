@@ -1,0 +1,78 @@
+# Luciano Alejandro Gómez Muñoz 22310214
+
+# Algoritmo de Ordenamiento por Árbol (Heap Sort)
+# ----------------------------------------------------------
+# Heap Sort es un algoritmo de ordenamiento basado en una estructura de datos 
+# llamada heap o montículo, específicamente un "max-heap".
+#
+# El proceso se compone de dos fases:
+# 1. Construir un max-heap a partir de los datos.
+# 2. Extraer el elemento máximo (raíz del heap) uno por uno, colocándolo al final 
+#    de la lista, y luego reajustar el heap.
+#
+# Un max-heap garantiza que el valor más grande esté en la raíz. Al moverlo al final 
+# de la lista y reducir el tamaño del heap, se repite el proceso hasta que toda 
+# la lista esté ordenada.
+#
+# La complejidad es O(n log n) en todos los casos, lo cual lo hace más eficiente 
+# que los métodos simples como inserción o burbuja para listas grandes.
+
+def heapify(arr, n, i):
+    """
+    Función auxiliar que mantiene la propiedad del max-heap en un subárbol
+    arr: lista de elementos
+    n: tamaño del heap (puede ser menor que len(arr) conforme se ordena)
+    i: índice del nodo actual que se desea ajustar
+    """
+    # Suponemos que el nodo más grande es el actual
+    mayor = i
+    # Calculamos los índices del hijo izquierdo y derecho
+    izquierda = 2 * i + 1
+    derecha = 2 * i + 2
+
+    # Si el hijo izquierdo existe y es mayor que el nodo actual, lo actualizamos
+    if izquierda < n and arr[izquierda] > arr[mayor]:
+        mayor = izquierda
+
+    # Si el hijo derecho existe y es mayor que el más grande encontrado, lo actualizamos
+    if derecha < n and arr[derecha] > arr[mayor]:
+        mayor = derecha
+
+    # Si el nodo mayor no es el actual, hacemos un intercambio
+    if mayor != i:
+        arr[i], arr[mayor] = arr[mayor], arr[i]  # Intercambiamos
+
+        # Llamamos recursivamente para ajustar el subárbol afectado
+        heapify(arr, n, mayor)
+
+def heap_sort(arr):
+    """
+    Función principal para aplicar el ordenamiento por heap
+    """
+    n = len(arr)
+
+    # Construimos un max-heap a partir del arreglo original
+    # Comenzamos desde el último nodo no hoja hacia la raíz
+    for i in range(n // 2 - 1, -1, -1):
+        heapify(arr, n, i)
+
+    # Extraemos los elementos uno por uno del heap
+    for i in range(n - 1, 0, -1):
+        # Movemos el elemento actual más grande (raíz) al final del arreglo
+        arr[0], arr[i] = arr[i], arr[0]
+
+        # Llamamos heapify al heap reducido para restaurar el orden
+        heapify(arr, i, 0)
+
+    # Retornamos la lista ordenada (opcional)
+    return arr
+
+# Ejemplo de uso:
+# Lista desordenada
+ejemplo = [12, 3, 5, 7, 19, 1]
+
+# Llamamos al ordenamiento por heap
+heap_sort(ejemplo)
+
+# Imprimimos la lista ordenada
+print("Lista ordenada:", ejemplo)
