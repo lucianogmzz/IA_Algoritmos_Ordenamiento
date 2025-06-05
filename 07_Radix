@@ -69,5 +69,7 @@ ejemplo = [170, 45, 75, 90, 802, 24, 2, 66]
 # Aplicamos radix sort
 radix_sort(ejemplo)
 
+print("Lista original:", ejemplo)
+
 # Imprimimos la lista ordenada
 print("Lista ordenada:", ejemplo)

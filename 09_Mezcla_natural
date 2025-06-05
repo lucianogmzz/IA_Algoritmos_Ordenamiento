@@ -52,12 +52,15 @@ def fusionar_series(series):
             fusion = merge(series[i], series[i + 1])
             nueva_lista.append(fusion)
             i += 2
+            
+            print("paso intermedio", nueva_lista)
         else:
             # Si queda una sola serie, se agrega sin fusionar
             nueva_lista.append(series[i])
             i += 1
 
     return nueva_lista
+
 
 def merge(izquierda, derecha):
     """
@@ -107,6 +110,8 @@ ejemplo = [1, 4, 5, 3, 6, 2, 7, 8]
 
 # Aplicamos el algoritmo de mezcla natural
 resultado = natural_merge_sort(ejemplo)
+
+print("Lista original:", ejemplo)
 
 # Imprimimos la lista ordenada
 print("Lista ordenada:", resultado)

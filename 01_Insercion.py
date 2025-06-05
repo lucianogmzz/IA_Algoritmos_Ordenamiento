@@ -43,8 +43,13 @@ def insertion_sort(lista):
 # Lista desordenada de ejemplo
 ejemplo = [10, 4, 2, 9, 5, 10, 7, 20]
 
+
+
 # Llamamos a la función de ordenamiento
 insertion_sort(ejemplo)
+
+print("Lista original:", ejemplo)
+
 
 # Imprimimos la lista ya ordenada
 print("Lista ordenada:", ejemplo)

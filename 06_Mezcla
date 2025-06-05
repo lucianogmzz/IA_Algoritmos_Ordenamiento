@@ -61,5 +61,7 @@ ejemplo = [38, 27, 43, 3, 9, 82, 10]
 # Aplicamos merge sort
 resultado = merge_sort(ejemplo)
 
+print("Lista original:", ejemplo)
+
 # Imprimimos la lista ordenada
 print("Lista ordenada:", resultado)

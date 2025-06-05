@@ -74,5 +74,7 @@ ejemplo = [12, 3, 5, 7, 19, 1]
 # Llamamos al ordenamiento por heap
 heap_sort(ejemplo)
 
+print("Lista original:", ejemplo)
+
 # Imprimimos la lista ordenada
 print("Lista ordenada:", ejemplo)

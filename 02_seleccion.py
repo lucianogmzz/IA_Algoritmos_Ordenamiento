@@ -44,5 +44,7 @@ ejemplo = [7, 3, 1, 9, 5]
 # Llamamos a la función de ordenamiento
 selection_sort(ejemplo)
 
+print("Lista original:", ejemplo)
+
 # Imprimimos la lista ordenada
 print("Lista ordenada:", ejemplo)

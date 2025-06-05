@@ -78,5 +78,7 @@ ejemplo = [37, 10, 22, 5, 70, 1, 18]
 # Aplicamos el algoritmo de mezcla directa
 straight_merge_sort(ejemplo)
 
+print("Lista original:", ejemplo)
+
 # Imprimimos el resultado
 print("Lista ordenada:", ejemplo)

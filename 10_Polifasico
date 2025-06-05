@@ -96,5 +96,7 @@ ejemplo = [5, 1, 9, 3, 7, 2, 8, 6, 4]
 # Aplicamos el algoritmo
 resultado = polyphase_sort(ejemplo)
 
+print("Lista original:", ejemplo)
+
 # Imprimimos la lista ordenada
 print("Lista ordenada:", resultado)

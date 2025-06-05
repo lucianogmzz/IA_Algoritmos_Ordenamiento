@@ -51,5 +51,7 @@ ejemplo = [10, 6, 2, 8, 4]
 # Llamamos a la función de ordenamiento
 bubble_sort(ejemplo)
 
+print("Lista original:", ejemplo)
+
 # Imprimimos la lista ya ordenada
 print("Lista ordenada:", ejemplo)
