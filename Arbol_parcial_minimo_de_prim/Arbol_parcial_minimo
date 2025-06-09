@@ -1,78 +1,80 @@
-import sys
-import networkx as nx
-import matplotlib.pyplot as plt
+import sys                      # Importa el módulo sys para usar sys.maxsize (valor muy grande)
+import networkx as nx           # Importa la librería NetworkX para trabajar con grafos
+import matplotlib.pyplot as plt # Importa pyplot para visualización de gráficos
 
 class Graph():
     def __init__(self, vertices):
-        self.V = vertices
+        self.V = vertices   # Número de vértices en el grafo
+        # Crea una matriz VxV inicializada en 0 (sin aristas)
         self.graph = [[0 for _ in range(vertices)] for _ in range(vertices)]
 
     def minKey(self, key, mstSet):
-        min_val = sys.maxsize
-        min_index = -1
+        min_val = sys.maxsize  # Valor inicial muy grande (infinito)
+        min_index = -1         # Índice del nodo con clave mínima (a encontrar)
 
-        for v in range(self.V):
-            if key[v] < min_val and not mstSet[v]:
-                min_val = key[v]
-                min_index = v
+        for v in range(self.V):                      # Iterar sobre todos los nodos
+            if key[v] < min_val and not mstSet[v]:   # Si no ha sido incluido y su clave es menor
+                min_val = key[v]                     # Actualizar mínimo
+                min_index = v                        # Guardar índice del nodo
 
-        return min_index
+        return min_index  # Devolver el nodo con la menor clave no procesado
 
     def primMST(self):
-        key = [sys.maxsize] * self.V
-        parent = [None] * self.V
-        key[0] = 0
-        mstSet = [False] * self.V
-        parent[0] = -1
+        key = [sys.maxsize] * self.V  # Lista de claves (pesos mínimos) para cada nodo
+        parent = [None] * self.V      # Lista de padres: parent[i] almacena el nodo desde el que se accede a i
+        key[0] = 0                    # Inicia desde el nodo 0, clave mínima = 0
+        mstSet = [False] * self.V     # Conjunto de nodos ya incluidos en el MST
+        parent[0] = -1                # El nodo 0 es la raíz del MST, no tiene padre
 
-        for _ in range(self.V):
-            u = self.minKey(key, mstSet)
-            mstSet[u] = True
+        for _ in range(self.V):  # Se repite V veces para incluir todos los nodos
+            u = self.minKey(key, mstSet)  # Escoge el nodo con la menor clave aún no incluido
+            mstSet[u] = True              # Marca el nodo como incluido en el MST
 
-            for v in range(self.V):
+            for v in range(self.V):  # Verifica todos los vecinos de u
+                # Si hay arista entre u y v, v no está en el MST, y el peso es menor que el actual
                 if self.graph[u][v] > 0 and not mstSet[v] and key[v] > self.graph[u][v]:
-                    key[v] = self.graph[u][v]
-                    parent[v] = u
+                    key[v] = self.graph[u][v]  # Actualiza la clave con el nuevo peso menor
+                    parent[v] = u             # Establece a u como padre de v en el MST
 
-        self.drawGraphWithMST(parent)
+        self.drawGraphWithMST(parent)  # Llama al método para dibujar el grafo y el MST
+
 
     def drawGraphWithMST(self, parent):
-        G_nx = nx.Graph()
+        G_nx = nx.Graph()  # Crea un grafo vacío con NetworkX
 
-        # Añadir todas las aristas del grafo original
+        # Agrega todas las aristas del grafo original con sus pesos
         for u in range(self.V):
             for v in range(self.V):
-                if self.graph[u][v] != 0:
-                    G_nx.add_edge(str(u), str(v), weight=self.graph[u][v])
+                if self.graph[u][v] != 0:  # Solo se añaden aristas con peso no nulo
+                    G_nx.add_edge(str(u), str(v), weight=self.graph[u][v])  # Nodos como strings
 
-        # Extraer las aristas del MST
-        mst_edges = []
+        mst_edges = []  # Lista para guardar las aristas del MST
         for i in range(1, self.V):
-            u = str(parent[i])
-            v = str(i)
-            mst_edges.append((u, v))
+            u = str(parent[i])  # Nodo padre
+            v = str(i)          # Nodo hijo
+            mst_edges.append((u, v))  # Agrega la arista al MST
 
-        pos = nx.spring_layout(G_nx, seed=42)
+        pos = nx.spring_layout(G_nx, seed=42)  # Genera posiciones para los nodos (layout fijo con semilla)
 
-        # Dibujar todas las aristas del grafo original en gris
+        # Dibuja el grafo completo (nodos y aristas originales) en gris
         nx.draw(G_nx, pos, with_labels=True, node_color='lightblue',
                 node_size=1000, font_size=12, edge_color='gray')
 
-        # Dibujar solo las aristas del MST encima, en verde y más gruesas
+        # Dibuja las aristas del MST en verde, más gruesas para resaltarlas
         nx.draw_networkx_edges(G_nx, pos, edgelist=mst_edges,
                                edge_color='green', width=3)
 
-        # Dibujar etiquetas de peso
+        # Añade etiquetas de los pesos de las aristas
         edge_labels = nx.get_edge_attributes(G_nx, 'weight')
         nx.draw_networkx_edge_labels(G_nx, pos, edge_labels=edge_labels)
 
-        plt.title("Grafo Original con Árbol de Expansión Mínimo (Prim)")
-        plt.show()
+        plt.title("Grafo Original con Árbol de Expansión Mínimo (Prim)")  # Título del gráfico
+        plt.show()  # Muestra el gráfico en pantalla
 
-
-# Código principal
 if __name__ == '__main__':
-    g = Graph(5)
+    g = Graph(5)  # Crea un grafo con 5 nodos (índices del 0 al 4)
+
+    # Define la matriz de adyacencia con pesos
     g.graph = [
         [0, 2, 0, 6, 0],
         [2, 0, 3, 8, 5],
@@ -81,4 +83,4 @@ if __name__ == '__main__':
         [0, 5, 7, 9, 0]
     ]
 
-    g.primMST()
+    g.primMST()  # Ejecuta el algoritmo de Prim y visualiza el resultado
